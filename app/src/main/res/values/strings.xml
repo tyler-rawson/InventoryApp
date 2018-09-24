@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8" standalone="no"?><!-- Copyright (C) 2016 The Android Open Source Project
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -9,7 +8,8 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
---><resources>
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Label for editor overflow menu option that deletes the current item [CHAR LIMIT=20] -->
     <string name="action_delete">Delete</string>
     <!-- Label for overflow menu option that deletes all item data in the app [CHAR LIMIT=20] -->
@@ -19,7 +19,7 @@
     <!-- Label for editor menu option to save item and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
     <!-- Name for the application [CHAR LIMIT=12] -->
-    <string name="app_name">Inventory</string>
+    <string name="app_name">Inventory Management</string>
     <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
     <string name="category_supplier_name">Supplier Name</string>
     <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
@@ -30,16 +30,16 @@
     <string name="category_product_quantity">Item Quantity</string>
     <!-- Title for activity to edit an item [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_item">Edit Item</string>
-    <!-- Title for activity to add a item [CHAR LIMIT=20] -->
+    <!-- Title for activity to add an item [CHAR LIMIT=20] -->
     <string name="editor_activity_title_new_item">Add an Item</string>
     <!-- Toast message in editor when new item has failed to be inserted [CHAR LIMIT=NONE] -->
     <string name="editor_insert_item_failed">Error with saving item</string>
     <!-- Toast message in editor when new item has been successfully inserted [CHAR LIMIT=NONE] -->
     <string name="editor_insert_item_successful">Item saved</string>
-    <!-- Subtitle text for the empty view that prompts the user to add a item [CHAR LIMIT=50] -->
-    <string name="empty_view_subtitle_text">Get started by adding a item</string>
+    <!-- Subtitle text for the empty view that prompts the user to add an item [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by adding an item</string>
     <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
-    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+    <string name="empty_view_title_text">Your database is empty!</string>
 
     !-- Text hint for price field in the editor [CHAR LIMIT=30] -->
     <string name="category_price">Item Price</string>
@@ -50,12 +50,12 @@
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
     <string name="hint_product_quantity">Quantity</string>
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_product_supplier_name">Name</string>
+    <string name="hint_product_supplier_name">Supplier Name</string>
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_product_supplier_phone">Phone</string>
+    <string name="hint_product_supplier_phone">Supplier Phone</string>
     <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
-    <!-- Dialog button text for the option to discard a user's changes [CHAR LIMIT=20] -->
+    <!-- Dialog button text for the option to discard user's changes [CHAR LIMIT=20] -->
     <string name="discard">Discard</string>
     <!-- Dialog button text for the option to keep editing the current item [CHAR LIMIT=20] -->
     <string name="keep_editing">Keep Editing</string>
@@ -69,4 +69,18 @@
     <string name="delete">Delete</string>
     <!-- Dialog button text for the option to cancel deletion of the current item [CHAR LIMIT=20] -->
     <string name="cancel">Cancel</string>
+    <string name="quantityBelowZero">Quantity cannot be less than zero.</string>
+    <string name="buttonNoStock">No Stock</string>
+    <string name="buttonSellItem">Sell Item</string>
+    <string name="dummy_data_product_name">Galaxy Smart Watch</string>
+    <string name="dummy_data_product_price">349.99</string>
+    <string name="dummy_data_product_quantity">3</string>
+    <string name="dummy_data_product_supplier_name">Samsung</string>
+    <string name="dummy_data_product_supplier_phone_number" tools:ignore="TypographyDashes">(800) 726-7864</string>
+    <string name="buttonIncrementText">+ 1</string>
+    <string name="buttonDecrementText">- 1</string>
+    <string name="order_more">ORDER MORE</string>
+    <string name="delete_entry">DELETE ENTRY</string>
+    <string name="InventoryCursorAdapter_priceInUSD">Price: $</string>
+    <string name="InventoryCursorAdapter_quantity">Quantity:</string>
 </resources>

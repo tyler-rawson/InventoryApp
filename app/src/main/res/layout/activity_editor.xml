@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:orientation="vertical"
-            android:paddingLeft="4dp">
+            android:paddingLeft="@dimen/padding_4dp">
 
             <!-- Product Name field -->
             <EditText
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:orientation="vertical"
-            android:paddingLeft="4dp">
+            android:paddingLeft="@dimen/padding_4dp">
 
             <!-- Product Price field -->
             <EditText
@@ -100,16 +100,41 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="2"
-                android:paddingLeft="4dp">
+                android:paddingLeft="@dimen/padding_4dp"
+                tools:ignore="NestedWeights,UselessParent">
 
-                <!-- Product Quantity field -->
-                <EditText
-                    android:id="@+id/edit_text_product_quantity"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/hint_product_quantity"
-                    android:inputType="number" />
+                <Button
+                    android:id="@+id/buttonIncrement"
+                    android:layout_width="@dimen/editorActivitySmallButton"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:onClick="buttonIncrement"
+                    android:text="@string/buttonIncrementText" />
+
+                <Button
+                    android:id="@+id/buttonDecrement"
+                    android:layout_width="@dimen/editorActivitySmallButton"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/buttonIncrement"
+                    android:enabled="false"
+                    android:onClick="buttonDecrement"
+                    android:text="@string/buttonDecrementText" />
+
+
+                <FrameLayout
+                    android:layout_width="@dimen/editorActivityQuantityEditTextWidth"
+                    android:layout_height="wrap_content">
+
+                    <!-- Product Quantity field -->
+                    <EditText
+                        android:id="@+id/edit_text_product_quantity"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/hint_product_quantity"
+                        android:inputType="number" />
+                </FrameLayout>
+
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
@@ -132,7 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:orientation="vertical"
-            android:paddingLeft="4dp">
+            android:paddingLeft="@dimen/padding_4dp">
 
             <!-- Supplier Name field -->
             <EditText
@@ -160,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:orientation="vertical"
-            android:paddingLeft="4dp">
+            android:paddingLeft="@dimen/padding_4dp">
 
             <!-- Supplier Phone field -->
             <EditText
@@ -170,5 +195,23 @@
                 android:inputType="phone" />
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonOrderItems"
+        android:layout_width="@dimen/editorActivityLargeButton"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="callSupplier"
+        android:text="@string/order_more"
+        android:textAllCaps="true" />
+
+    <Button
+        android:id="@+id/buttonDeleteItem"
+        android:layout_width="@dimen/editorActivityLargeButton"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="deleteEntry"
+        android:text="@string/delete_entry"
+        android:textAllCaps="true" />
 
 </LinearLayout>

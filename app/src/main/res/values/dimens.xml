@@ -15,5 +15,9 @@
 
     <!-- Common margin value used throughout the app -->
     <dimen name="activity_margin">16dp</dimen>
+    <dimen name="editorActivityLargeButton">130dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="editorActivitySmallButton">50dp</dimen>
+    <dimen name="editorActivityQuantityEditTextWidth">130dp</dimen>
 </resources>
 

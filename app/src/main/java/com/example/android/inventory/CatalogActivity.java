@@ -75,16 +75,16 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // Create a ContentValues object where column names are the keys,
         // and Galaxy Smartwatch attributes are the values.
         ContentValues values = new ContentValues();
-        values.put(InventoryEntry.COLUMN_PRODUCT_NAME, "Galaxy Smartwatch");
-        values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, 500);
-        values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, "1");
-        values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME, "Samsung");
-        values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, "(800) 726-7864");
+        values.put(InventoryEntry.COLUMN_PRODUCT_NAME, getString(R.string.dummy_data_product_name));
+        values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, getString(R.string.dummy_data_product_price));
+        values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, getString(R.string.dummy_data_product_quantity));
+        values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME, getString(R.string.dummy_data_product_supplier_name));
+        values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, getString(R.string.dummy_data_product_supplier_phone_number));
 
         // Insert a new row for Toto into the provider using the ContentResolver.
         // Use the {@link InventoryEntry#CONTENT_URI} to indicate that we want to insert
         // into the inventory database table.
-        // Receive the new content URI that will allow us to access Toto's data in the future.
+        // Receive the new content URI that will allow us to access this data in the future.
         Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
     }
 
@@ -127,8 +127,11 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // you will actually use after this query.
         String[] projection = {
                 InventoryEntry._ID,
-                InventoryEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE,
                 InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
         };
 
 

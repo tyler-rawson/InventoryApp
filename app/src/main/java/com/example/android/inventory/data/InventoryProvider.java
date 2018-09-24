@@ -35,7 +35,7 @@ public class InventoryProvider extends ContentProvider {
     /**
      * Tag for the log messages
      */
-    public static final String LOG_TAG = InventoryProvider.class.getSimpleName();
+    private static final String LOG_TAG = InventoryProvider.class.getSimpleName();
 
     /**
      * URI matcher code for the content URI for the inventory table
@@ -162,14 +162,14 @@ public class InventoryProvider extends ContentProvider {
         // Check that the product price is not negative
         double productPrice = values.getAsDouble(InventoryEntry.COLUMN_PRODUCT_PRICE);
         Log.d("InventoryProvider", "productPrice: " + productPrice);
-        if (!InventoryContract.InventoryEntry.isGreaterThanOrEqualToZero(productPrice)) {
+        if (InventoryEntry.isGreaterThanOrEqualToZero(productPrice)) {
             throw new IllegalArgumentException("Item requires a price > 0");
         }
 
         // Check that the product quantity is not negative
         Integer productQuantity = values.getAsInteger(InventoryEntry.COLUMN_PRODUCT_QUANTITY);
         Log.d("InventoryProvider", "productQuantity: " + productQuantity);
-        if (productQuantity == null || !InventoryContract.InventoryEntry.isGreaterThanOrEqualToZero(productQuantity)) {
+        if (productQuantity == null || InventoryEntry.isGreaterThanOrEqualToZero(productQuantity)) {
             throw new IllegalArgumentException("Item requires a quantity >= 0");
         }
 
@@ -243,7 +243,7 @@ public class InventoryProvider extends ContentProvider {
         // Check that the product price is not negative
         if (values.containsKey(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE)) {
             double productPrice = values.getAsDouble(InventoryEntry.COLUMN_PRODUCT_PRICE);
-            if (!InventoryContract.InventoryEntry.isGreaterThanOrEqualToZero(productPrice)) {
+            if (InventoryEntry.isGreaterThanOrEqualToZero(productPrice)) {
                 throw new IllegalArgumentException("Item requires a valid price >= 0");
             }
         }
@@ -252,7 +252,7 @@ public class InventoryProvider extends ContentProvider {
         // Check that the product quantity is not negative
         if (values.containsKey(InventoryEntry.COLUMN_PRODUCT_QUANTITY)) {
             Integer productQuantity = values.getAsInteger(InventoryEntry.COLUMN_PRODUCT_QUANTITY);
-            if (productQuantity == null || !InventoryContract.InventoryEntry.isGreaterThanOrEqualToZero(productQuantity)) {
+            if (productQuantity == null || InventoryEntry.isGreaterThanOrEqualToZero(productQuantity)) {
                 throw new IllegalArgumentException("Item requires a quantity >= 0");
             }
         }

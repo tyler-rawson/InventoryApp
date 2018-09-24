@@ -15,6 +15,7 @@
  */
 package com.example.android.inventory;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -29,10 +30,12 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -44,11 +47,11 @@ import com.example.android.inventory.data.InventoryContract.InventoryEntry;
  */
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private boolean itemHasChanged = false;
-
     // OnTouchListener that listens for any user touches on a View, implying that they are modifying
-// the view, and we change the mItemHasChanged boolean to true.
+    // the view, and we change the mItemHasChanged boolean to true.
 
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+    private final View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             itemHasChanged = true;
@@ -82,6 +85,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private EditText editTextSupplierPhone;
 
+    /**
+     * Button to decrement the quantity
+     */
+    private Button buttonDecrement;
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -95,25 +102,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-
-        // Examine intent to see if we're going to be adding or editing an item.
-        Intent intent = getIntent();
-        currentItemUri = intent.getData();
-
-        // If there's no URI stored in the currentItemUri then we must be adding an item. Otherwise, we're editing an item.
-        if (currentItemUri == null) {
-            setTitle(getString(R.string.editor_activity_title_new_item));
-            // Invalidate the options menu, so the "Delete" menu option can be hidden.
-            // (It doesn't make sense to delete an item that hasn't been created yet.)
-            invalidateOptionsMenu();
-        } else {
-            setTitle(getString(R.string.editor_activity_title_edit_item));
-            getLoaderManager().initLoader(CatalogActivity.INVENTORY_LOADER, null, this);
-        }
-
         // Find all relevant views that we will need to read user input from
         editTextProductName = (EditText) findViewById(R.id.edit_product_name);
         editTextProductPrice = (EditText) findViewById(R.id.edit_product_price);
@@ -121,12 +113,37 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         editTextSupplierName = (EditText) findViewById(R.id.edit_text_supplier_name);
         editTextSupplierPhone = (EditText) findViewById(R.id.edit_text_supplier_phone);
         editTextSupplierPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        Button buttonIncrement = (Button) findViewById(R.id.buttonIncrement); // Button to increment the quantity
+        buttonDecrement = (Button) findViewById(R.id.buttonDecrement);
+        Button buttonDeleteItem = (Button) findViewById(R.id.buttonDeleteItem);// Button to delete the current item
+        Button buttonOrderItems = (Button) findViewById(R.id.buttonOrderItems); // Button to place a phone call to order more items from supplier
+
+        // Examine intent to see if we're going to be adding or editing an item.
+        Intent intent = getIntent();
+        currentItemUri = intent.getData();
+
+        // If there's no URI stored in the currentItemUri then we must be adding an item. Otherwise, we're editing an item.
+        if (currentItemUri == null) { // adding
+            buttonDeleteItem.setVisibility(View.GONE);
+            buttonOrderItems.setVisibility(View.GONE);
+            setTitle(getString(R.string.editor_activity_title_new_item));
+            // Invalidate the options menu, so the "Delete" menu option can be hidden.
+            // (It doesn't make sense to delete an item that hasn't been created yet.)
+            invalidateOptionsMenu();
+        } else { // editing
+            buttonDeleteItem.setVisibility(View.VISIBLE);
+            buttonOrderItems.setVisibility(View.VISIBLE);
+            setTitle(getString(R.string.editor_activity_title_edit_item));
+            getLoaderManager().initLoader(CatalogActivity.INVENTORY_LOADER, null, this);
+        }
 
         editTextProductName.setOnTouchListener(mTouchListener);
         editTextProductPrice.setOnTouchListener(mTouchListener);
         editTextProductQuantity.setOnTouchListener(mTouchListener);
         editTextSupplierName.setOnTouchListener(mTouchListener);
         editTextSupplierPhone.setOnTouchListener(mTouchListener);
+        buttonIncrement.setOnTouchListener(mTouchListener);
+        buttonDecrement.setOnTouchListener(mTouchListener);
     }
 
     /**
@@ -298,6 +315,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 null);                  // Default sort order
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
@@ -321,10 +339,21 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Update the views on the screen with the values from the database
             editTextProductName.setText(productName);
             editTextProductPrice.setText(String.valueOf(productPrice));
-            editTextProductQuantity.setText(productQuantity);
+            editTextProductQuantity.setText(String.valueOf(productQuantity));
             editTextSupplierName.setText(supplierName);
             editTextSupplierPhone.setText(supplierPhone);
 
+            if (currentItemUri != null) { // editing an item because there is a uri.
+                if (editTextProductQuantity.length() == 0 || editTextProductQuantity.getText() == null) {
+                    //Do nothing
+                } else {
+                    int currentQuantity = Integer.parseInt(editTextProductQuantity.getText().toString());
+
+                    if (currentQuantity > 0) { // check to see if the quantity is greater than zero before enabling the decrement button.
+                        buttonDecrement.setEnabled(true);
+                    }
+                }
+            }
         }
     }
 
@@ -384,7 +413,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
+        // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -415,7 +444,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Only perform the delete if this is an existing item.
         if (currentItemUri != null) {
             // Call the ContentResolver to delete the item at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentitemUri
+            // Pass in null for the selection and selection args because the currentItemUri
             // content URI already identifies the item that we want.
             int rowsDeleted = getContentResolver().delete(currentItemUri, null, null);
             // Show a toast message depending on whether or not the delete was successful.
@@ -432,4 +461,54 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             finish();
         }
     }
+
+    public void buttonIncrement(View view) {
+        if (editTextProductQuantity.length() == 0 || editTextProductQuantity.getText() == null) { // If editTextProductQuantity is null
+            editTextProductQuantity.setText(String.valueOf(0)); // set it to zero
+        }
+        buttonDecrement.setEnabled(true);
+        int currentQuantity = Integer.parseInt(editTextProductQuantity.getText().toString());
+        Log.d("EditorActivity", "buttonIncrement: current quantity:" + currentQuantity);
+        int newQuantity = currentQuantity + 1;
+        Log.d("EditorActivity", "buttonIncrement: newQuantity:" + newQuantity);
+        editTextProductQuantity.setText(String.valueOf(newQuantity));
+    }
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    public void buttonDecrement(@SuppressWarnings("unused") View view) {
+        if (editTextProductQuantity.length() == 0 || editTextProductQuantity.getText() == null) {
+            // Do nothing if null or zero - we don't want the user to decrement below zero or attempt to decrement a null value.
+        } else {
+            int currentQuantity = Integer.parseInt(editTextProductQuantity.getText().toString());
+
+            if (currentQuantity == 1) {
+                buttonDecrement.setEnabled(false); // If quantity contains one item, enable buttonDecrement.
+            }
+
+            if (currentQuantity > 0) { // Ensure we won't go negative.
+                int newQuantity = currentQuantity - 1; // Subtract from current quantity.
+                editTextProductQuantity.setText(String.valueOf(newQuantity)); // Set the new value to the product quantity text field.
+            } else {
+                // This won't ever evaluate to true due to buttonDecrement being disabled when the value is 1 (above).
+                // This line is only here to prevent errors in the future when editing the app.
+                Toast.makeText(this, R.string.quantityBelowZero, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void callSupplier(@SuppressWarnings("unused") View view) {
+        try {
+            String number = editTextSupplierPhone.getText().toString().trim();
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", number, null));
+            startActivity(intent);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void deleteEntry(@SuppressWarnings("unused") View view) {
+        showDeleteConfirmationDialog();
+    }
+
 }

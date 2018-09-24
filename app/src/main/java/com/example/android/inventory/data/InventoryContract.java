@@ -26,7 +26,7 @@ public final class InventoryContract {
      * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
      * the content provider.
      */
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     /**
      * Possible path (appended to base content URI for possible URI's)
@@ -77,11 +77,7 @@ public final class InventoryContract {
         public final static String COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER = "product_supplier_phone_number";
 
         public static boolean isGreaterThanOrEqualToZero(double value) {
-            if (value >= 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return value < 0;
         }
 
     }
