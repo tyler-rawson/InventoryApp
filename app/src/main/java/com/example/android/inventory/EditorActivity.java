@@ -149,99 +149,110 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /**
      * Get user input from editor and save new item into database.
      */
-    private void saveItem() {
-        if (currentItemUri == null) { // if the user is adding an item
-            // Read from input fields
-            // Use trim to eliminate leading or trailing white space
-            String productNameString = editTextProductName.getText().toString().trim();
-            String productPriceString = editTextProductPrice.getText().toString().trim();
-            String productQuantityString = editTextProductQuantity.getText().toString().trim();
-            String productSupplierName = editTextSupplierName.getText().toString().trim();
-            String productSupplierPhone = editTextSupplierPhone.getText().toString().trim();
+    private boolean saveItem() {
+        // Read from input fields
+        // Use trim to eliminate leading or trailing white space
+        String productNameString = editTextProductName.getText().toString().trim();
+        String productPriceString = editTextProductPrice.getText().toString().trim();
+        String productQuantityString = editTextProductQuantity.getText().toString().trim();
+        String productSupplierName = editTextSupplierName.getText().toString().trim();
+        String productSupplierPhone = editTextSupplierPhone.getText().toString().trim();
 
-            if (currentItemUri == null &&
-                    TextUtils.isEmpty(productNameString) && TextUtils.isEmpty(productPriceString) &&
-                    TextUtils.isEmpty(productQuantityString) && TextUtils.isEmpty(productSupplierName)
-                    && TextUtils.isEmpty(productSupplierPhone)) {
-                return;
+        if (TextUtils.isEmpty(productNameString)) { // validate data in editText fields
+            Toast.makeText(this, R.string.error_product_name_string, Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (TextUtils.isEmpty(productPriceString)) {
+            Toast.makeText(this, R.string.error_product_price_string, Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (TextUtils.isEmpty(productQuantityString)) {
+            Toast.makeText(this, R.string.error_product_quantity_string, Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (TextUtils.isEmpty(productSupplierName)) {
+            Toast.makeText(this, R.string.error_product_supplier_name_string, Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (TextUtils.isEmpty(productSupplierPhone)) {
+            Toast.makeText(this, R.string.error_product_supplier_phone_string, Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+
+            if (currentItemUri == null) { // if the user is adding an item
+
+                if (TextUtils.isEmpty(productNameString) && TextUtils.isEmpty(productPriceString) &&
+                        TextUtils.isEmpty(productQuantityString) && TextUtils.isEmpty(productSupplierName)
+                        && TextUtils.isEmpty(productSupplierPhone)) {
+                    return true;
+                }
+
+                // Create a ContentValues object where column names are the keys,
+                // and item attributes from the editor are the values.
+                ContentValues values = new ContentValues();
+                values.put(InventoryEntry.COLUMN_PRODUCT_NAME, productNameString);
+                values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, productPriceString);
+                values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, productQuantityString);
+                values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME, productSupplierName);
+                values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, productSupplierPhone);
+
+                double price = 0.0f;
+                if (!TextUtils.isEmpty(productPriceString)) { // if user enters a price value > 0
+                    price = Double.parseDouble(productPriceString); // parse int and store as double price
+                }
+                values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, price);
+
+                // Insert a new item into the provider, returning the content URI for the new item.
+                Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
+
+                // Show a toast message depending on whether or not the insertion was successful
+                if (newUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    Toast.makeText(this, getString(R.string.editor_insert_item_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the insertion was successful and we can display a toast.
+                    Toast.makeText(this, getString(R.string.editor_insert_item_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else
+
+            { // if the user is editing an item
+
+                if (TextUtils.isEmpty(productNameString) && TextUtils.isEmpty(productPriceString) &&
+                        TextUtils.isEmpty(productQuantityString) && TextUtils.isEmpty(productSupplierName)
+                        && TextUtils.isEmpty(productSupplierPhone)) {
+                    return true;
+                }
+
+                // Create a ContentValues object where column names are the keys,
+                // and item attributes from the editor are the values.
+                ContentValues values = new ContentValues();
+                values.put(InventoryEntry.COLUMN_PRODUCT_NAME, productNameString);
+                values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, productPriceString);
+                values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, productQuantityString);
+                values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME, productSupplierName);
+                values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, productSupplierPhone);
+
+                double price = 0.0f;
+                if (!TextUtils.isEmpty(productPriceString)) { // if user enters a price value > 0
+                    price = Double.parseDouble(productPriceString); // parse int and store as double price
+                }
+                values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, price);
+
+                // Save an existing item into the provider, returning the content URI for the new item.
+                int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
+
+                // Show a toast message depending on whether or not the update was successful.
+                if (rowsAffected == 0) {
+                    // If no rows were affected, then there was an error with the update.
+                    Toast.makeText(this, getString(R.string.editor_insert_item_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the update was successful and we can display a toast.
+                    Toast.makeText(this, getString(R.string.editor_insert_item_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
 
-            // Create a ContentValues object where column names are the keys,
-            // and item attributes from the editor are the values.
-            ContentValues values = new ContentValues();
-            values.put(InventoryEntry.COLUMN_PRODUCT_NAME, productNameString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, productPriceString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, productQuantityString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME, productSupplierName);
-            values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, productSupplierPhone);
-
-            double price = 0.0f;
-            if (!TextUtils.isEmpty(productPriceString)) { // if user enters a price value > 0
-                price = Double.parseDouble(productPriceString); // parse int and store as double price
-            }
-            values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, price);
-
-            // Insert a new item into the provider, returning the content URI for the new item.
-            Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
-
-            // Show a toast message depending on whether or not the insertion was successful
-            if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_item_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_item_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
-        } else
-
-        { // if the user is editing an item
-            // Read from input fields
-            // Use trim to eliminate leading or trailing white space
-            String productNameString = editTextProductName.getText().toString().trim();
-            String productPriceString = editTextProductPrice.getText().toString().trim();
-            String productQuantityString = editTextProductQuantity.getText().toString().trim();
-            String productSupplierName = editTextSupplierName.getText().toString().trim();
-            String productSupplierPhone = editTextSupplierPhone.getText().toString().trim();
-
-            if (currentItemUri == null &&
-                    TextUtils.isEmpty(productNameString) && TextUtils.isEmpty(productPriceString) &&
-                    TextUtils.isEmpty(productQuantityString) && TextUtils.isEmpty(productSupplierName)
-                    && TextUtils.isEmpty(productSupplierPhone)) {
-                return;
-            }
-
-            // Create a ContentValues object where column names are the keys,
-            // and item attributes from the editor are the values.
-            ContentValues values = new ContentValues();
-            values.put(InventoryEntry.COLUMN_PRODUCT_NAME, productNameString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, productPriceString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, productQuantityString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_NAME, productSupplierName);
-            values.put(InventoryEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, productSupplierPhone);
-
-            double price = 0.0f;
-            if (!TextUtils.isEmpty(productPriceString)) { // if user enters a price value > 0
-                price = Double.parseDouble(productPriceString); // parse int and store as double price
-            }
-            values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, price);
-
-            // Save an existing item into the provider, returning the content URI for the new item.
-            int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
-
-            // Show a toast message depending on whether or not the update was successful.
-            if (rowsAffected == 0) {
-                // If no rows were affected, then there was an error with the update.
-                Toast.makeText(this, getString(R.string.editor_insert_item_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the update was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_item_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
         }
-
+        return true;
     }
 
     @Override
@@ -259,8 +270,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // save item to database via saveItem()
-                saveItem();
-                finish();
+                if (saveItem()) {
+                    finish();
+                }
+
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:

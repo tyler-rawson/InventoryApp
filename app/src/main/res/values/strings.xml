@@ -83,4 +83,9 @@
     <string name="delete_entry">DELETE ENTRY</string>
     <string name="InventoryCursorAdapter_priceInUSD">Price: $</string>
     <string name="InventoryCursorAdapter_quantity">Quantity:</string>
+    <string name="error_product_name_string">Product name cannot be blank. Example: Sample item</string>
+    <string name="error_product_price_string">Product price cannot be blank. Example: 28.95</string>
+    <string name="error_product_quantity_string">Product quantity cannot be blank. Example: 2</string>
+    <string name="error_product_supplier_name_string">Product supplier name cannot be blank. Example: Microsoft</string>
+    <string name="error_product_supplier_phone_string">Product supplier phone cannot be blank. Example: (123) 456-7890</string>
 </resources>
